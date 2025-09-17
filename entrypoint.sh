@@ -12,32 +12,31 @@ PGPASSWORD=${DB_PASSWORD} psql -h ${DB_HOST} -U ${DB_USER} -d postgres -tc "SELE
 
 echo "Database ${DB_NAME} is ready"
 
-if [ ! -f /etc/lapdev.conf ]; then
-    cat > /etc/lapdev.conf <<EOF
-[database]
-host = ${DB_HOST:-postgres-server}
-port = ${DB_PORT:-5432}
-name = ${DB_NAME:-lapdev}
-user = ${DB_USER:-subaga}
-password = ${DB_PASSWORD:-subaga2025}
-
-[server]
-bind = 0.0.0.0:80
+cat > /etc/lapdev.conf <<EOF
+db_host = "${DB_HOST:-postgres-server}"
+db_port = ${DB_PORT:-5432}
+db_name = "${DB_NAME:-lapdev}"
+db_user = "${DB_USER:-subaga}"
+db_password = "${DB_PASSWORD:-subaga2025}"
+bind = "0.0.0.0:80"
+root_dir = "/var/lib/lapdev"
 EOF
-fi
 
 mkdir -p /var/log/supervisor
 mkdir -p /var/log
 mkdir -p /var/lib/lapdev
 
 echo "Checking for lapdev binaries..."
-which lapdev || echo "lapdev not found"
-which lapdev-ws || echo "lapdev-ws not found"
-
-echo "Checking lapdev help..."
-/usr/bin/lapdev --help || echo "Lapdev help failed"
+ls -la /usr/bin/lapdev* || echo "No lapdev binaries found"
 
 echo "Config file contents:"
 cat /etc/lapdev.conf
+
+echo "Testing lapdev with config..."
+/usr/bin/lapdev --config-file /etc/lapdev.conf &
+sleep 2
+ps aux | grep lapdev
+
+killall lapdev 2>/dev/null || true
 
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
