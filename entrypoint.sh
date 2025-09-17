@@ -2,18 +2,15 @@
 
 if [ ! -f /etc/lapdev.conf ]; then
     cat > /etc/lapdev.conf <<EOF
-db_host = ${DB_HOST:-lapdev-postgres}
+db_host = ${DB_HOST:-postgres-server}
 db_port = ${DB_PORT:-5432}
 db_name = ${DB_NAME:-lapdev}
-db_user = ${DB_USER:-lapdev}
-db_password = ${DB_PASSWORD:-changeme123}
+db_user = ${DB_USER:-subaga}
+db_password = ${DB_PASSWORD:-subaga2025}
 EOF
 fi
 
-systemctl enable lapdev
-systemctl start lapdev
+mkdir -p /var/log/supervisor
+mkdir -p /var/log
 
-systemctl enable lapdev-ws
-systemctl start lapdev-ws
-
-tail -f /var/log/lapdev/*.log
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

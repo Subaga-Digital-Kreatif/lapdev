@@ -1,51 +1,32 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15
-    container_name: lapdev-postgres
-    environment:
-      POSTGRES_DB: lapdev
-      POSTGRES_USER: lapdev
-      POSTGRES_PASSWORD: changeme123
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - dokploy-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U lapdev"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   lapdev:
     build: .
     container_name: lapdev-controller
-    depends_on:
-      postgres:
-        condition: service_healthy
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "8443:443"
       - "6123:6123"
     volumes:
       - ./lapdev.conf:/etc/lapdev.conf
       - ssl_certs:/etc/lapdev/ssl
       - lapdev_data:/var/lib/lapdev
+      - logs:/var/log
     environment:
-      DB_HOST: lapdev-postgres
+      DB_HOST: postgres-server
       DB_PORT: 5432
       DB_NAME: lapdev
-      DB_USER: lapdev
-      DB_PASSWORD: changeme123
+      DB_USER: subaga
+      DB_PASSWORD: subaga2025
     networks:
       - dokploy-network
     restart: unless-stopped
 
 volumes:
-  postgres_data:
   ssl_certs:
   lapdev_data:
+  logs:
 
 networks:
   dokploy-network:
