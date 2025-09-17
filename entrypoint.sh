@@ -13,4 +13,8 @@ fi
 mkdir -p /var/log/supervisor
 mkdir -p /var/log
 
+echo "Checking for lapdev binaries..."
+which lapdev || echo "lapdev not found"
+which lapdev-ws || echo "lapdev-ws not found"
+
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
