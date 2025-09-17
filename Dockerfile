@@ -18,6 +18,14 @@ RUN curl -sL -o lapdev_0.1.0-1_amd64.deb https://github.com/lapce/lapdev/release
     rm lapdev_0.1.0-1_amd64.deb && \
     rm -rf /var/lib/apt/lists/*
 
+RUN curl -L https://lap.dev/install-ws.sh -o install-ws.sh && \
+    sed -i 's/systemctl.*//g' install-ws.sh && \
+    chmod +x install-ws.sh && \
+    ./install-ws.sh || true
+
+RUN ls -la /usr/bin/lapdev* || true
+RUN /usr/bin/lapdev --help || true
+
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
