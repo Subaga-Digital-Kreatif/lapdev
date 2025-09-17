@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     supervisor \
     ca-certificates \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tmp

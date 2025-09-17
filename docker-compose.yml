@@ -22,6 +22,14 @@ services:
     networks:
       - dokploy-network
     restart: unless-stopped
+    depends_on:
+      - wait-for-postgres
+
+  wait-for-postgres:
+    image: busybox
+    command: sh -c "until nc -z postgres-server 5432; do sleep 1; done"
+    networks:
+      - dokploy-network
 
 volumes:
   ssl_certs:
