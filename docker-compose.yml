@@ -3,7 +3,7 @@ version: '3.8'
 services:
   lapdev:
     build: .
-    container_name: lapdev-controller
+    container_name: lapdev-controller1
     ports:
       - "8080:80"
       - "8443:443"
